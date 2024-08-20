@@ -47,7 +47,7 @@ npm run cypress:open
 ![alt text](<screenshots/Screenshot from 2024-08-20 17-09-52.png>)
 
 ### Joblists
-![alt text](<Screenshot from 2024-08-20 20-35-49.png>)
+![alt text](<screenshots/Screenshot from 2024-08-20 20-35-49.png>)
 
 ### Bookmark
 ![alt text](<screenshots/Screenshot from 2024-08-20 20-35-58.png>)
