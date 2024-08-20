@@ -54,6 +54,18 @@ const mockJobs = [{
   total_reviews: 0
 }]
 
+const mockBookmarks = [
+  {
+    dateBookmarked: "0001-01-01T00:00:00Z",
+    datePosted: "0001-01-01T00:00:00Z",
+    eventID: mockJobs[0].id,
+    location: mockJobs[0].location,
+    logoUrl: mockJobs[0].logoUrl,
+    opType: mockJobs[0].opType,
+    orgName: mockJobs[0].orgName,
+    title: mockJobs[0].title,
+}
+]
 
 describe('Bookmarking Job Post', () => {
   beforeEach( () => {
@@ -101,6 +113,7 @@ describe('Bookmarking Job Post', () => {
       cy.intercept('POST', '**/bookmarks/*', { statusCode: 200, body: {} }).as('createBookmark');
       cy.intercept('DELETE', '**/bookmarks/*', { statusCode: 200, body: {} }).as('deleteBookmark');
       cy.intercept('GET', '**/opportunities/search', { statusCode: 200, body: {data: mockJobs} }).as('getOpporunities');
+      cy.intercept('GET', '**/bookmarks', { statusCode: 200, body: {data: mockBookmarks} }).as('getBookmarks');
      
       cy.url().should('include', '/landing');
 
@@ -119,7 +132,11 @@ describe('Bookmarking Job Post', () => {
       cy.wait(2000)
 
       cy.get('[data-testid="bookmark-link"]').first().click();
-      cy.get("Volunteer Software Development Mentor").should('be.visible')
+      cy.wait(2000)
+      cy.wait('@getBookmarks');
+
+
+      cy.get('[data-testid="job-title"]').should('have.text', mockJobs[0].title)
 
       // Find the job card and click the unbookmark icon
       cy.get('[data-testid="unbookmark-icon"]').first().click();

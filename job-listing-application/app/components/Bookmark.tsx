@@ -6,9 +6,6 @@ import { useSession } from 'next-auth/react'
 import { useCreateBookmarkMutation, useDeleteBookmarkMutation, useGetAllJobsQuery } from '../api/apiSlice'
 import { IoBookmarks, IoBookmarksOutline } from 'react-icons/io5'
 import { MdOpenInNew } from 'react-icons/md'
-import { useDispatch, useSelector } from 'react-redux'
-import { addBookmark, removeBookmark } from '../api/bookmarkSlice'
-import { RootState } from '../store'
 
 const BookmarkTile = ({bookmark}: {bookmark: Bookmark}) => {
   const titleTokens = bookmark.title.split(" ")
@@ -22,14 +19,11 @@ const BookmarkTile = ({bookmark}: {bookmark: Bookmark}) => {
     const [deleteBookmark, {isLoading: isUnBookmarkLoading, isError: isUnBookmarkError, isSuccess: isUnBookmarkSuccess, error: unBookmarkError}] = useDeleteBookmarkMutation()
     
     
-    const bookmarks = useSelector((state: RootState) => state.bookmarks.bookmarks);
-    const isBookmarked = bookmarks.some(mark => mark.id === bookmark.eventID);
+    const [isBookmarked, setIsBookmarked] = useState(true)
 
     const router = useRouter()
     const { data: session } = useSession();
     const accessToken = session?.user?.accessToken as string
-    const {refetch} = useGetAllJobsQuery(accessToken)
-    const dispatch = useDispatch();
 
 
     const handleClick = () => {
@@ -49,11 +43,11 @@ const BookmarkTile = ({bookmark}: {bookmark: Bookmark}) => {
 
     useEffect(() => {
         if(isBookmarkSuccess){
-            dispatch(addBookmark({id: bookmark.eventID}))
+            setIsBookmarked(true)
         }
 
         if(isUnBookmarkSuccess){
-            dispatch(removeBookmark( bookmark.eventID))
+            setIsBookmarked(false)
         }
 
     }, [isBookmarkSuccess, isUnBookmarkSuccess])

@@ -2,7 +2,7 @@ import JobCard from '../app/components/JobCard';
 import { useCreateBookmarkMutation, useDeleteBookmarkMutation } from '../app/api/apiSlice';
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-
+import { SessionProvider } from 'next-auth/react';
 
 jest.mock("next/navigation", () => ({
   useRouter() {
@@ -51,16 +51,10 @@ jest.mock("next/navigation", () => ({
     total_reviews: 0
   };
 
-
-
-
-import { SessionProvider } from 'next-auth/react';
-
 jest.mock('../app/api/apiSlice', () => ({
   useCreateBookmarkMutation: jest.fn(),
   useDeleteBookmarkMutation: jest.fn(),
 }));
-
 
 describe('JobCard Component', () => {
   const mockSession = {
@@ -73,16 +67,19 @@ describe('JobCard Component', () => {
   const mockDeleteBookmark = jest.fn();
 
   beforeEach(() => {
-    (useCreateBookmarkMutation ).mockReturnValue([mockCreateBookmark, { isLoading: false, isSuccess: false }]);
-    (useDeleteBookmarkMutation ).mockReturnValue([mockDeleteBookmark, { isLoading: false, isSuccess: false }]);
+    useCreateBookmarkMutation.mockReturnValue([mockCreateBookmark, {  isSuccess: false }]);
+    useDeleteBookmarkMutation.mockReturnValue([mockDeleteBookmark, {  isSuccess: false }]);
+
+    render(
+      <SessionProvider session={mockSession}>
+          <JobCard jobPost={mockJobPost} />
+      </SessionProvider>
+    );
+
   });
 
   it('should render job details correctly', () => {
-    render(
-      <SessionProvider session={mockSession}>
-        <JobCard jobPost={mockJobPost} />
-      </SessionProvider>
-    );
+    
 
     expect(screen.getByTestId('job-title')).toHaveTextContent(mockJobPost.title);
     expect(screen.getByTestId('org-name-and-location')).toHaveTextContent(mockJobPost.orgName);
@@ -91,24 +88,27 @@ describe('JobCard Component', () => {
   });
 
   it('should call createBookmark when the bookmark icon is clicked', async () => {
-    render(
-      <SessionProvider session={mockSession}>
-        <JobCard jobPost={mockJobPost} />
-      </SessionProvider>
-    );
 
     const bookmarkIcon = screen.getByTestId('bookmark-icon');
     fireEvent.click(bookmarkIcon);
 
+    useCreateBookmarkMutation.mockReturnValue([mockCreateBookmark, {  isSuccess: true }]);
+
+
     await waitFor(() => {
       expect(mockCreateBookmark).toHaveBeenCalledWith({ eventId: mockJobPost.id, token: 'mockAccessToken' });
     });
+    
+    expect(mockCreateBookmark.mock.calls.length > 0)
+
+    
   });
 
   it('should call deleteBookmark when the unbookmark icon is clicked', async () => {
+    useCreateBookmarkMutation.mockReturnValue([mockCreateBookmark, {  isSuccess: true }]);
     render(
       <SessionProvider session={mockSession}>
-        <JobCard jobPost={{ ...mockJobPost, isBookmarked: true }} />
+          <JobCard jobPost={mockJobPost} />
       </SessionProvider>
     );
 
@@ -118,5 +118,8 @@ describe('JobCard Component', () => {
     await waitFor(() => {
       expect(mockDeleteBookmark).toHaveBeenCalledWith({ eventId: mockJobPost.id, token: 'mockAccessToken' });
     });
+    expect(mockDeleteBookmark.mock.calls.length > 0)
+
   });
 });
+

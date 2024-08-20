@@ -34,6 +34,7 @@ const Bookmarked = () => {
     
     return (
         <div className="pl-8 sm:pl-12 lg:pl-28 pr-10 sm:pr-20 lg:pr-72 py-16 ">
+            <h1 className="font-heading text-3xl font-semibold">My Bookmarks</h1>
             {data?.data?.map((job) => <BookmarkTile key={job.eventID} bookmark={job} />)}
 
         </div>

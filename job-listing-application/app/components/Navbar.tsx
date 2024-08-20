@@ -3,6 +3,7 @@ import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'
+import SearchComponent from './SearchBar'
 
 
 const Navbar = ({children}: {children?: React.ReactNode}) => {
@@ -16,6 +17,7 @@ const Navbar = ({children}: {children?: React.ReactNode}) => {
         
         <header className="border border-b-2 h-14 border-gray-100 shadow-sm flex justify-between items-center">
             <h1 className='font-heading font-semibold text-2xl ml-2  text-dark-blue'>Job Listing Application</h1>
+            
             <nav className="flex justify-between items-center gap-6 mx-2  text-blue-600">
                 { 
                     (status === "unauthenticated") ? 
@@ -36,6 +38,7 @@ const Navbar = ({children}: {children?: React.ReactNode}) => {
     
 
             </nav>
+            
         </header>
     </div>
   )

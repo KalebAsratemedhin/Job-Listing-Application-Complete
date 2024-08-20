@@ -23,7 +23,8 @@ export const apiSlice = createApi({
         method: "GET",
         headers:{
           Authorization: token ? `Bearer ${token}` : ""
-        } 
+        },
+        
       })
       
     }),
@@ -78,3 +79,5 @@ export const {
   useDeleteBookmarkMutation,
   useSignupMutation
 } = apiSlice
+
+export const apiReducer =  apiSlice.reducer

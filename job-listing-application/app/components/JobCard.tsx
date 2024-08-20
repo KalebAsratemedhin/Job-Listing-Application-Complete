@@ -118,16 +118,12 @@ import { MdOpenInNew } from "react-icons/md";
 // export default JobCard
 
 
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store';
-import { addBookmark, removeBookmark } from '../api/bookmarkSlice';
 import { useCreateBookmarkMutation, useDeleteBookmarkMutation } from "../api/apiSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import JobPost from '../types/JobPost';
 
 const JobCard = ({ jobPost }: { jobPost: JobPost }) => {
-    const dispatch = useDispatch();
     const { data: session } = useSession();
     const accessToken = session?.user?.accessToken as string;
     const colors = [['text-orange-tag', 'bg-orange-tag', 'border-orange-tag'], ['text-purple-tag', 'bg-purple-tag', 'border-purple-tag']];
@@ -137,6 +133,8 @@ const JobCard = ({ jobPost }: { jobPost: JobPost }) => {
         
     }   
 
+    const [isBookmarked, setIsBookmarked] = useState(jobPost.isBookmarked)
+
     const titleTokens = jobPost.title.split(" ")
     
     const title = titleTokens.map(token => {
@@ -145,8 +143,7 @@ const JobCard = ({ jobPost }: { jobPost: JobPost }) => {
     
     }).join(" ")
 
-    const bookmarks = useSelector((state: RootState) => state.bookmarks.bookmarks);
-    const isBookmarked = bookmarks.some(bookmark => bookmark.id === jobPost.id);
+    
 
     const [createBookmark, { isSuccess: isBookmarkSuccess }] = useCreateBookmarkMutation();
     const [deleteBookmark, { isSuccess: isUnBookmarkSuccess }] = useDeleteBookmarkMutation();
@@ -161,10 +158,10 @@ const JobCard = ({ jobPost }: { jobPost: JobPost }) => {
 
     useEffect(() => {
         if (isBookmarkSuccess) {
-            dispatch(addBookmark(jobPost));
+            setIsBookmarked(true)
 
         } else if (isUnBookmarkSuccess){
-            dispatch(removeBookmark(jobPost.id));
+            setIsBookmarked(false)
             
         }
 

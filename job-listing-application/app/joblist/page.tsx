@@ -4,30 +4,14 @@ import Spinner from "../components/Spinner"
 import Error from "../components/Error"
 import { useGetAllJobsQuery } from '@/app/api/apiSlice'
 import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { useDispatch, useSelector } from "react-redux"
-import { setBookmarks } from "../api/bookmarkSlice"
-import { useEffect } from "react"
-import { RootState } from "../store"
-
-
 
 const page = () => {
     const session = useSession()
     const accessToken = session.data?.user?.accessToken as string
-    const {data, isError, error, isLoading, isSuccess} = useGetAllJobsQuery(accessToken)
+    const {data, isError, error, isLoading, isSuccess} = useGetAllJobsQuery(accessToken, {
+        refetchOnMountOrArgChange: true,
+    })
     const jobPosts = data?.data
-    const dispatch = useDispatch()
-    const bookmarks = useSelector((state: RootState) => state.bookmarks.bookmarks)
-
-
-    useEffect(() => {
-        if (jobPosts && bookmarks.length == 0) {
-          const initialBookmarks = jobPosts
-            .filter(job => job.isBookmarked)
-          dispatch(setBookmarks(initialBookmarks));
-        }
-      }, [jobPosts, dispatch]);
 
 
     console.log("session from job list", session)

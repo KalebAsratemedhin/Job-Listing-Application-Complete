@@ -1,12 +1,10 @@
 import { apiSlice } from '@/app/api/apiSlice';
 import { configureStore } from '@reduxjs/toolkit'
-import bookmarkReducer from "./api/bookmarkSlice"
 
 
 export const store = configureStore({
   reducer: {
-    [apiSlice.reducerPath]: apiSlice.reducer,
-    bookmarks: bookmarkReducer,
+    [apiSlice.reducerPath]: apiSlice.reducer
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware()
