@@ -72,3 +72,12 @@ npm run cypress:open
 
 ### Unauthenticated users cannot bookmark
 ![alt text](<screenshots/Screenshot from 2024-08-20 20-58-23.png>)
+
+
+### Tests
+
+#### Jest
+![alt text](<screenshots/Screenshot from 2024-08-20 21-20-48.png>)
+
+#### Cypress
+![alt text](<screenshots/Screenshot from 2024-08-20 16-55-19.png>)
